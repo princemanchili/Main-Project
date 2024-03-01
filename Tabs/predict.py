@@ -2,9 +2,10 @@
 
 # Import necessary modules
 import streamlit as st
-
+import pandas as pd
 # Import necessary functions from web_functions
-from web_functions import predict
+# from web_functions import predict
+import web_functions
 
 
 def app(df, X, y):
@@ -23,53 +24,62 @@ def app(df, X, y):
     
     # Take feature input from the user
     # Add a subheader
+    df['Age'] = pd.to_numeric(df['Age'], errors='coerce')
+
+   
     st.subheader("Select Values:")
     
-    col1,col2, col3 = st.columns(3)
+    col1,col2= st.columns(2)
     with col1:
         # Take input of features from the user.
-        Resp_pm = st.slider("Respiration Per Minute", int(df["Resp_pm"].min()), int(df["Resp_pm"].max()))
-        AGE = st.slider("Age", int(df["AGE"].min()), int(df["AGE"].max()))
-        PackHistory = st.slider("PackHistory", int(df["PackHistory"].min()), int(df["PackHistory"].max()))
-        MWT1 = st.slider("MWT1", float(df["MWT1"].min()), float(df["MWT1"].max()))
-        MWT2 = st.slider("MWT2", float(df["MWT2"].min()), float(df["MWT2"].max()))
-        MWT1Best = st.slider("MWT1Best", float(df["MWT1Best"].min()), float(df["MWT1Best"].max()))
-        FEV1 = st.slider("FEV1", float(df["FEV1"].min()), float(df["FEV1"].max()))
-        FEV1PRED = st.slider("FEV1PRED", float(df["FEV1PRED"].min()), float(df["FEV1PRED"].max()))
+        Age = st.slider("Age", df["Age"].min(), df["Age"].max())
+      
+        Gender = st.slider("Gender", df["Gender"].min(), df["Gender"].max())    
+        Body_Temperature = st.slider("Body_Temperature", float(df["Body_Temperature"].min()), float(df["Body_Temperature"].max()))
+        Cough = st.slider("Cough", int(df["Cough"].min()), int(df["Cough"].max()))
+        Sore_Throat = st.slider("Sore_Throat", int(df["Sore_Throat"].min()), int(df["Sore_Throat"].max()))
+       
 
     with col2:
-        FVC = st.slider("FVC", int(df["FVC"].min()), int(df["FVC"].max()))
-        FVCPRED = st.slider("FVCPRED", int(df["FVCPRED"].min()), int(df["FVCPRED"].max()))
-        CAT = st.slider("CAT", float(df["CAT"].min()), float(df["CAT"].max()))
-        HAD = st.slider("HAD", float(df["HAD"].min()), float(df["HAD"].max()))
-        SGRQ = st.slider("SGRQ", float(df["SGRQ"].min()), float(df["SGRQ"].max()))
-        AGEquartiles = st.slider("AGEquartiles", float(df["AGEquartiles"].min()), float(df["AGEquartiles"].max()))
-        copd = st.slider("copd", float(df["copd"].min()), float(df["copd"].max()))
+         Difficulty_Breathing = st.slider("Difficulty_Breathing", float(df["Difficulty_Breathing"].min()), float(df["Difficulty_Breathing"].max()))
+         Chest_Pain = st.slider("Chest_Pain", int(df["Chest_Pain"].min()), int(df["Chest_Pain"].max()))
+         White_Blood_Cell_Count = st.slider("White_Blood_Cell_Count", float(df["White_Blood_Cell_Count"].min()), float(df["White_Blood_Cell_Count"].max()))
+         Heart_Rate = st.slider("Heart_Rate", int(df["Heart_Rate"].min()), int(df["Heart_Rate"].max()))
+         Respiratory_Rate = st.slider("Respiratory_Rate", int(df["Respiratory_Rate"].min()), int(df["Respiratory_Rate"].max()))
 
-    with col3:
-        gender = st.slider("gender", int(df["gender"].min()), int(df["gender"].max()))
-        smoking = st.slider("smoking", int(df["smoking"].min()), int(df["smoking"].max()))
-        Diabetes = st.slider("Diabetes", int(df["Diabetes"].min()), int(df["Diabetes"].max()))
-        muscular = st.slider("muscular", float(df["muscular"].min()), float(df["muscular"].max()))
-        hypertension = st.slider("hypertension", float(df["hypertension"].min()), float(df["hypertension"].max()))
-        AtrialFib = st.slider("AtrialFib", float(df["AtrialFib"].min()), float(df["AtrialFib"].max()))
-        IHD = st.slider("IHD", float(df["IHD"].min()), float(df["IHD"].max()))
-        
 
-    # Create a list to store all the features
-    features = [Resp_pm,AGE,PackHistory,MWT1,MWT2,MWT1Best,FEV1,FEV1PRED,FVC,FVCPRED,CAT,HAD,SGRQ,AGEquartiles,copd,gender,smoking,Diabetes,muscular,hypertension,AtrialFib,IHD]
-
+   
+         feature_values = [
+    Age,
+    Gender,
+    Body_Temperature,
+    Cough,
+    Sore_Throat,
+    Difficulty_Breathing,
+    Chest_Pain,
+    White_Blood_Cell_Count,
+    Heart_Rate,
+    Respiratory_Rate
+]
+         
+    
     # Create a button to predict
+    # if st.button("Predict"):
+    #     # Get prediction and model score
+    #     prediction, score = web_functions.predict(X, y, features)
     if st.button("Predict"):
-        # Get prediction and model score
-        prediction, score = predict(X, y, features)
-        
+        prediction, score = web_functions.predict(X, y, feature_values)
+    # Get prediction and model score
+    # Pass the actual feature values for prediction, not the column names
+    # prediction, score = web_functions.predict(X, y, feature_values)  # Fixed line
+
+    # ... [rest of your code below]    
      
 
-        if (AGE< 60):
+        if (Age< 60):
             st.info("Follow clinical procedures and recommendations with 600 mg of paracetamol to keep away fever")
 
-        if (AGE >60):
+        if (Age >60):
             st.info("Immediate attention needed!")
 
         # Print the output according to the prediction

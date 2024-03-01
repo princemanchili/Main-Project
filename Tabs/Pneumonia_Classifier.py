@@ -49,7 +49,7 @@ def app():
             )
 
             # Print teh score of the model 
-            st.sidebar.success("The model used is trusted by doctor and has an accuracy of " + str((score*100)) + "%")
+            # st.sidebar.success("The model used is trusted by doctor and has an accuracy of " + str((score*100)) + "%")
         else:
             components.html(
                 """
